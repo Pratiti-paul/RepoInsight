@@ -46,49 +46,101 @@ def extract_github_data(state: ReviewState):
         repos_resp = requests.get(repos_url, headers=headers)
         
         if user_resp.status_code == 200 and repos_resp.status_code == 200:
-            repos_data = repos_resp.json()
+            all_repos = repos_resp.json()
             
-            # Compute Derived Metrics
-            total_stars = sum(r.get("stargazers_count", 0) for r in repos_data)
-            langs = [r.get("language") for r in repos_data if r.get("language")]
+            # Compute General Metrics (using all fetched repos)
+            total_stars = sum(r.get("stargazers_count", 0) for r in all_repos)
+            langs = [r.get("language") for r in all_repos if r.get("language")]
             top_langs = [l for l, _ in Counter(langs).most_common(3)]
             
-            # Estimate Activity Level
-            recent_updates = sorted([r.get("updated_at") for r in repos_data if r.get("updated_at")], reverse=True)
-            activity_level = "Medium"
-            if recent_updates:
-                try:
-                    last_update = datetime.strptime(recent_updates[0], "%Y-%m-%dT%H:%M:%SZ")
-                    days_ago = (datetime.now() - last_update).days
-                    if days_ago < 14: activity_level = "High"
-                    elif days_ago > 60: activity_level = "Low"
-                except:
-                    pass
+            # --- RANKING LOGIC ---
+            # 1. Filter out Forks
+            original_repos = [r for r in all_repos if not r.get("fork", False)]
+            
+            def calculate_repo_score(repo):
+                # Raw Stats
+                stars = repo.get("stargazers_count", 0)
+                forks = repo.get("forks_count", 0)
+                
+                # Recency Score (updated_at)
+                now = datetime.now()
+                updated_at_str = repo.get("updated_at")
+                updated_at = datetime.strptime(updated_at_str, "%Y-%m-%dT%H:%M:%SZ") if updated_at_str else now
+                days_since_update = (now - updated_at).days
+                
+                if days_since_update < 30: recency_pts = 10
+                elif days_since_update < 90: recency_pts = 7
+                elif days_since_update < 365: recency_pts = 4
+                else: recency_pts = 1
+                
+                # Activity Score (pushed_at)
+                pushed_at_str = repo.get("pushed_at")
+                pushed_at = datetime.strptime(pushed_at_str, "%Y-%m-%dT%H:%M:%SZ") if pushed_at_str else updated_at
+                days_since_push = (now - pushed_at).days
+                
+                if days_since_push < 30: activity_pts = 10
+                elif days_since_push < 90: activity_pts = 7
+                elif days_since_push < 365: activity_pts = 4
+                else: activity_pts = 1
+                
+                # Description Score
+                desc = repo.get("description") or ""
+                desc_pts = 10 if len(desc.strip()) > 20 else (5 if len(desc.strip()) > 0 else 0)
+                
+                # Formula: (stars * 0.4) + (forks * 0.2) + (recency * 0.2) + (activity * 0.1) + (desc * 0.1)
+                # We cap raw stars/forks contribution to keep the score manageable
+                base_score = (min(stars, 100) * 0.4) + (min(forks, 50) * 0.2) + (recency_pts * 0.2) + (activity_pts * 0.1) + (desc_pts * 0.1)
+                
+                # Penalties / Boosts
+                bonus = 0
+                penalty = 0
+                
+                # Penalty: Inactive > 2 years
+                if days_since_update > 730: penalty = 5
+                
+                # Boost: Modern Tech (AI, Web, Cloud)
+                modern_keywords = ['ai', 'ml', 'gpt', 'llm', 'react', 'nextjs', 'fastapi', 'cloud', 'aws', 'docker']
+                text_to_scan = f"{repo.get('name', '')} {desc} {repo.get('language', '')}".lower()
+                if any(kw in text_to_scan for kw in modern_keywords): bonus = 2
+                
+                score = max(0, base_score + bonus - penalty)
+                
+                # Ranking Reason helper
+                if penalty > 0: reason = "Project is stale/inactive"
+                elif stars > 50: reason = "Significant community trust and engagement"
+                elif recency_pts == 10: reason = "Highly active project with recent updates"
+                elif bonus > 0: reason = "Modern technology stack and relevant skills"
+                else: reason = "Original project with clear scope"
+                
+                return score, reason
+
+            scored_repos = []
+            for r in original_repos:
+                score, reason = calculate_repo_score(r)
+                scored_repos.append({
+                    "name": r.get("name") or "Unnamed",
+                    "description": r.get("description") or "No description provided",
+                    "stars": r.get("stargazers_count") or 0,
+                    "forks": r.get("forks_count") or 0,
+                    "language": r.get("language") or "Unknown",
+                    "updated_at": r.get("updated_at") or "",
+                    "score": round(score, 1),
+                    "reason": reason
+                })
+            
+            # Sort by Score descending
+            scored_repos.sort(key=lambda x: x["score"], reverse=True)
+            top_repos = scored_repos[:10]
             
             metrics = {
                 "total_stars": total_stars,
                 "top_languages": top_langs,
-                "activity_level": activity_level,
-                "analyzed_count": len(repos_data)
+                "activity_level": "High" if any(r["score"] > 20 for r in scored_repos[:3]) else "Medium",
+                "analyzed_count": len(all_repos)
             }
-
-            # Sort and pick Top 10 for deep analysis
-            repos_data.sort(key=lambda x: (x.get("stargazers_count") or 0, x.get("updated_at") or ""), reverse=True)
-            top_repos = repos_data[:10]
-            
-            detailed_repos = []
-            for repo in top_repos:
-                detailed_repos.append({
-                    "name": repo.get("name") or "",
-                    "description": repo.get("description") or "No description provided",
-                    "stars": repo.get("stargazers_count") or 0,
-                    "forks": repo.get("forks_count") or 0,
-                    "language": repo.get("language") or "Unknown",
-                    "updated_at": repo.get("updated_at") or ""
-                })
                     
             return {
-                "github_data": detailed_repos,
+                "github_data": top_repos,
                 "user_profile": user_profile,
                 "metrics": metrics
             }
