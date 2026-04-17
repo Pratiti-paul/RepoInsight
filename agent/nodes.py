@@ -1,6 +1,7 @@
 import os
 import requests
 import json
+import re
 from dotenv import load_dotenv
 from langchain_groq import ChatGroq
 from langchain_core.messages import HumanMessage
@@ -106,16 +107,19 @@ Data:
     
     try:
         content = response.content.strip()
-        # Handle cases where LLM returns output in a markdown block
-        if content.startswith("```json"):
-            content = content[7:]
-        if content.startswith("```"):
-            content = content[3:]
-        if content.endswith("```"):
-            content = content[:-3]
+        
+        # Extract JSON using regex to handle extra preamble or postamble
+        match = re.search(r'```(?:json)?\s*(.*?)\s*```', content, re.DOTALL)
+        if match:
+            clean_content = match.group(1)
+        else:
+            # Fallback if no markdown blocks are used
+            clean_content = content
             
-        parsed_feedback = json.loads(content.strip())
-    except json.JSONDecodeError:
+        parsed_feedback = json.loads(clean_content.strip())
+    except json.JSONDecodeError as e:
+        print("JSON DECODE ERROR:", e)
+        print("FAILED ON CONTENT:", content)
         # Fallback if malformed
         parsed_feedback = {
             "projects": [],
