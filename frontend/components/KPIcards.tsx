@@ -1,87 +1,69 @@
 import React from 'react';
-import { Target, Trophy, Briefcase, Star } from 'lucide-react';
+import { Target, Trophy, Briefcase, UserCheck } from 'lucide-react';
 
 interface KPIcardsProps {
-  portfolioScore?: number;
-  portfolioLevel?: string;
-  portfolioSummary?: string;
+  assessment?: string;
+  hireability?: string;
+  summary?: string;
   totalProjects: number;
   topProjectsCount: number;
 }
 
 export default function KPIcards({ 
-  portfolioScore, 
-  portfolioLevel, 
-  portfolioSummary,
+  assessment, 
+  hireability, 
+  summary,
   totalProjects, 
   topProjectsCount 
 }: KPIcardsProps) {
   
-  // Convert 0-10 score to 0-100 for better UI granularity
-  const displayScore = portfolioScore !== undefined ? Math.round(portfolioScore * 10) : null;
-  
-  const getLevelColor = (level?: string) => {
-    const l = level?.toLowerCase();
-    if (l === 'high') return 'bg-green-100 text-green-700 border-green-200';
-    if (l === 'medium') return 'bg-yellow-100 text-yellow-700 border-yellow-200';
-    if (l === 'low') return 'bg-red-100 text-red-700 border-red-200';
-    return 'bg-slate-100 text-slate-700 border-slate-200';
+  const getAssessmentColor = (val?: string) => {
+    const v = val?.toLowerCase();
+    if (v === 'strong') return 'bg-green-100 text-green-700 border-green-200';
+    if (v === 'good') return 'bg-blue-100 text-blue-700 border-blue-200';
+    if (v === 'average') return 'bg-yellow-100 text-yellow-700 border-yellow-200';
+    return 'bg-red-100 text-red-700 border-red-200';
   };
 
-  const getScoreColor = (score: number) => {
-    if (score >= 80) return 'text-green-600';
-    if (score >= 50) return 'text-yellow-600';
-    return 'text-red-600';
-  };
-
-  const getProgressColor = (score: number) => {
-    if (score >= 80) return 'bg-green-500';
-    if (score >= 50) return 'bg-yellow-500';
-    return 'bg-red-500';
+  const getHireabilityColor = (val?: string) => {
+    const v = val?.toLowerCase();
+    if (v === 'hireable') return 'bg-green-500 text-white';
+    if (v === 'borderline') return 'bg-amber-500 text-white';
+    return 'bg-slate-400 text-white';
   };
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
-      {/* Primary Score Card */}
+      {/* Primary Assessment Card */}
       <div className="lg:col-span-1 bg-white rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 flex flex-col justify-between relative overflow-hidden group">
         <div className="absolute top-0 right-0 p-6 opacity-[0.03] group-hover:opacity-[0.05] transition-opacity">
-           <Star className="w-32 h-32 rotate-12" />
+           <Briefcase className="w-32 h-32 rotate-12" />
         </div>
         
         <div className="relative">
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center justify-between mb-8">
             <div className="p-3 rounded-2xl bg-blue-50 text-blue-600">
-               <Briefcase className="h-6 w-6" />
+               <UserCheck className="h-6 w-6" />
             </div>
-            {portfolioLevel && (
-              <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider border ${getLevelColor(portfolioLevel)}`}>
-                Level: {portfolioLevel}
+            {hireability && (
+              <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest shadow-sm ${getHireabilityColor(hireability)}`}>
+                {hireability}
               </span>
             )}
           </div>
 
-          <div className="space-y-1 mb-6">
-            <p className="text-sm font-semibold text-slate-400 uppercase tracking-widest">Portfolio Strength</p>
-            <div className="flex items-baseline gap-1">
-              <h3 className={`text-5xl font-black tracking-tight ${displayScore !== null ? getScoreColor(displayScore) : 'text-slate-300'}`}>
-                {displayScore !== null ? displayScore : '--'}
-              </h3>
-              <span className="text-xl font-bold text-slate-300">/100</span>
+          <div className="space-y-4 mb-8">
+            <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">Portfolio Level</p>
+            <div className="flex items-center gap-3">
+              <span className={`text-4xl font-black tracking-tight px-4 py-1 rounded-2xl border-2 ${getAssessmentColor(assessment)}`}>
+                {assessment || 'Analyzing...'}
+              </span>
             </div>
           </div>
-
-          {displayScore !== null && (
-            <div className="w-full h-2 bg-slate-100 rounded-full mb-6 relative overflow-hidden">
-               <div 
-                 className={`h-full rounded-full transition-all duration-1000 ease-out ${getProgressColor(displayScore)}`}
-                 style={{ width: `${displayScore}%` }}
-               />
-            </div>
-          )}
         </div>
 
-        <p className="text-slate-600 text-sm leading-relaxed font-medium italic">
-          "{portfolioSummary || 'No summary available for this portfolio'}"
+        <p className="text-slate-600 text-sm leading-relaxed font-semibold italic border-l-4 border-blue-200 pl-4 py-1">
+          "{summary || 'No summary available for this portfolio'}"
         </p>
       </div>
 
@@ -95,7 +77,7 @@ export default function KPIcards({
           <div>
             <p className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-1">Total Analysis</p>
             <h3 className="text-4xl font-black text-slate-900">{totalProjects}</h3>
-            <p className="text-xs text-slate-500 mt-1 font-medium">Repositories scanned</p>
+            <p className="text-xs text-slate-500 mt-1 font-medium">Original repositories</p>
           </div>
         </div>
 
@@ -107,7 +89,7 @@ export default function KPIcards({
           <div>
             <p className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-1">Top Tier</p>
             <h3 className="text-4xl font-black text-slate-900">{topProjectsCount}</h3>
-            <p className="text-xs text-slate-500 mt-1 font-medium">Original standout works</p>
+            <p className="text-xs text-slate-500 mt-1 font-medium">Standout original works</p>
           </div>
         </div>
       </div>

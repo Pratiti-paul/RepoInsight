@@ -180,7 +180,14 @@ REPOSITORY SUMMARY:
 - Activity level: {metrics.get('activity_level', 'Medium')}"""
 
     # 2. Upgraded Persona & Tasks
-    prompt = f"""You are a senior software engineer and hiring manager evaluating a GitHub portfolio.
+    prompt = f"""You are a senior software engineer and hiring manager evaluating a GitHub portfolio. 
+Your goal is to provide a professional, qualitative assessment of a candidate's work.
+
+TONE & APPROACH:
+- Be encouraging and slightly lenient (not overly harsh).
+- Focus on identifying professional signals and growth potential.
+- Avoid extreme negative language; instead, use phrases like "could benefit from more depth" or "shows promise in X".
+- Same input should produce consistent qualitative assessments.
 
 DEVELOPER CONTEXT:
 {context}
@@ -188,32 +195,30 @@ DEVELOPER CONTEXT:
 REPOSITORIES TO ANALYZE (detailed data for top {len(repos)} repos):
 {json.dumps(repos, indent=2)}
 
-QUALITY RUBRIC (use this strictly):
-- Beginner: no README, single file, no structure, tutorial/copy-paste level
-- Intermediate: has README, organized folders, some abstraction, no tests or CI
-- Strong: README + tests or CI/CD, clear architecture, non-trivial original logic
+PROJECT CLASSIFICATION RUBRIC:
+- Strong: Real-world use case, good structure and documentation, multiple features or technical complexity, active/recent updates.
+- Intermediate: Decent implementation, basic functionality, but missing depth, polish, or professional-grade documentation.
+- Weak: Simple/tutorial-based, lack of real-world relevance, poor structure, or incomplete state.
 
-SCORING RUBRIC (score each project out of 10):
-- Impact: 0-3 pts (0 = tutorial/tiny, 3 = high real-world relevance, solved a non-trivial problem)
-- Complexity: 0-3 pts (0 = trivial logic, 3 = original complex algorithms, system architecture, or multithreading)
-- Readability: 0-2 pts (0 = messy/unorganized, 2 = clear structure, naming, and meaningful documentation)
-- Consistency: 0-2 pts (0 = erratic style/commit history, 2 = professional, consistent coding patterns)
+PORTFOLIO ASSESSMENT LOGIC:
+- Hireable: Multiple strong projects, good tech stack usage, and consistent professional activity.
+- Borderline: A mix of intermediate projects with few strong ones, showing potential but needing more depth.
+- Not Ready: Primarily weak projects or a pattern of tutorial-level work without original application.
 
 STRICT RULES:
 - Base ALL analysis ONLY on the provided developer profile and repository statistics.
 - If description is missing, say "No description provided" — do NOT invent purpose.
 - Be specific: reference actual repo names, languages, and signals in the data.
-- Never use phrases like "diverse tech stack" or "strong foundation".
-- Scores must be justified by specific signals in the data (e.g., "High star count suggests community trust").
+- NEVER use numeric scores (e.g., 0-10 or 0-100). Talk ONLY in qualitative levels.
 
 TASKS:
-1. For EACH repository: assess purpose, identify stack, evaluate quality, score it out of 10 (with breakdown), and give 1 specific actionable improvement.
-2. Identify top 3 strongest projects with reasoning tied to specific signals.
-3. List technical strengths as patterns (e.g., "Strong mastery of C++ system libraries").
-4. List concrete weaknesses (e.g. "0 of 10 repos have unit tests").
-5. List missing skills based on gaps (e.g. "No evidence of cloud deployment or CI/CD").
-6. Flag any red flags (e.g. "Multiple years of inactivity", "Plagiarized tutorials").
-7. Give an OVERALL portfolio score out of 10 (average) and assess hireability.
+1. For EACH repository: assess purpose, tech stack, and classify strength (Strong | Intermediate | Weak) with professional reasoning.
+2. Identify top 3 strongest projects with reasoning.
+3. List technical strengths as patterns.
+4. List constructive weaknesses (e.g. "Portfolio would benefit from more comprehensive unit testing").
+5. List missing skills based on tech stack gaps.
+6. Provide an OVERALL portfolio assessment (Level: Strong | Good | Average | Needs Improvement).
+7. Assess hireability (Hireable | Borderline | Not Ready).
 
 Return STRICT JSON only:
 {{
@@ -221,32 +226,20 @@ Return STRICT JSON only:
     "name": "",
     "summary": "",
     "tech_stack": [],
-    "quality": "Beginner | Intermediate | Strong",
-    "score": {{
-      "total": 0,
-      "breakdown": {{
-        "impact": 0,
-        "complexity": 0,
-        "readability": 0,
-        "consistency": 0
-      }},
-      "justification": ""
-    }},
-    "improvement": ""
+    "project_strength": "Strong | Intermediate | Weak",
+    "reasoning": "Explain classification using specific data signals (e.g., 'Recent activity suggests high maintenance standards')."
   }}],
   "top_projects": [{{
     "name": "",
-    "score": 0,
     "reasoning": ""
   }}],
   "strengths": [],
   "weaknesses": [],
   "missing_skills": [],
-  "red_flags": [],
-  "overall_portfolio_score": {{
-    "score": 0.0,
-    "level": "High | Medium | Low",
-    "summary": "Explain reasoning for the score and hireability level here."
+  "overall_portfolio_assessment": {{
+    "level": "Strong | Good | Average | Needs Improvement",
+    "hireability": "Hireable | Borderline | Not Ready",
+    "summary": "Provide a human, encouraging summary of the total portfolio assessment."
   }}
 }}"""
 
@@ -274,10 +267,10 @@ Return STRICT JSON only:
             "strengths": [],
             "weaknesses": ["Failed to parse AI response. Please try again."],
             "missing_skills": [],
-            "red_flags": [],
-            "overall_portfolio_score": {
-                "score": 0.0,
-                "summary": "Parse failure."
+            "overall_portfolio_assessment": {
+                "level": "Average",
+                "hireability": "Borderline",
+                "summary": "Parse failure. Please try again."
             }
         }
 

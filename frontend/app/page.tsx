@@ -16,20 +16,19 @@ interface TopProjectData {
   reasoning: string;
 }
 
-interface OverallPortfolioScore {
-  score: number;
-  level: string;
+interface OverallPortfolioAssessment {
+  level: 'Strong' | 'Good' | 'Average' | 'Needs Improvement';
+  hireability: 'Hireable' | 'Borderline' | 'Not Ready';
   summary: string;
 }
 
 interface PortfolioData {
-  projects?: any[]; // We'll update the Project interior in Projects.tsx or here
+  projects?: any[]; 
   top_projects?: TopProjectData[];
   strengths?: string[];
   weaknesses?: string[];
   missing_skills?: string[];
-  red_flags?: string[];
-  overall_portfolio_score?: OverallPortfolioScore;
+  overall_portfolio_assessment?: OverallPortfolioAssessment;
 }
 
 export default function Home() {
@@ -126,9 +125,9 @@ export default function Home() {
         {data && !isLoading && (
           <div className="animate-in fade-in slide-in-from-bottom-8 duration-700 ease-out">
             <KPIcards 
-              portfolioScore={data.overall_portfolio_score?.score}
-              portfolioLevel={data.overall_portfolio_score?.level}
-              portfolioSummary={data.overall_portfolio_score?.summary}
+              assessment={data.overall_portfolio_assessment?.level}
+              hireability={data.overall_portfolio_assessment?.hireability}
+              summary={data.overall_portfolio_assessment?.summary}
               totalProjects={data.projects?.length || 0}
               topProjectsCount={data.top_projects?.length || 0}
             />
