@@ -1,85 +1,76 @@
 import React from 'react';
-import { Target, Trophy, Briefcase, UserCheck } from 'lucide-react';
+import { Award, Briefcase, Zap, UserCheck } from 'lucide-react';
 
 interface KPIcardsProps {
-  assessment?: string;
-  hireability?: string;
+  assessment?: 'Strong' | 'Good' | 'Average' | 'Needs Improvement';
+  hireability?: 'Hireable' | 'Borderline' | 'Not Ready';
   summary?: string;
-  totalProjects: number;
-  topProjectsCount: number;
+  totalProjects?: number;
+  topProjectsCount?: number;
 }
 
-export default function KPIcards({ 
-  assessment, 
-  summary,
-  totalProjects, 
-  topProjectsCount 
-}: KPIcardsProps) {
-  
-  const getAssessmentColor = (val?: string) => {
-    const v = val?.toLowerCase();
-    if (v === 'strong') return 'bg-green-100 text-green-700 border-green-200';
-    if (v === 'good') return 'bg-blue-100 text-blue-700 border-blue-200';
-    if (v === 'average') return 'bg-yellow-100 text-yellow-700 border-yellow-200';
-    return 'bg-red-100 text-red-700 border-red-200';
+export default function KPIcards({ assessment, hireability, summary, totalProjects, topProjectsCount }: KPIcardsProps) {
+  const getAssessmentStyle = (val?: string) => {
+    switch(val) {
+      case 'Strong': return 'bg-[#E8F0E4] text-[#4A7C40] border-[#C6D9A0]';
+      case 'Good': return 'bg-[#EDE6DC] text-[#8B6F47] border-[#D9CEBD]';
+      case 'Average': return 'bg-[#FEF3C7] text-[#92400E] border-[#FDE68A]';
+      default: return 'bg-[#F5E8E4] text-[#B85040] border-[#F0997B]';
+    }
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-      {/* Primary Assessment Card */}
-      <div className="lg:col-span-1 bg-white rounded-[2.5rem] p-10 md:p-12 shadow-[0_20px_50px_rgba(0,0,0,0.02)] relative overflow-hidden group border border-slate-50/50">
-        <div className="absolute top-0 right-0 p-8 opacity-[0.02] group-hover:opacity-[0.04] transition-opacity">
-           <Briefcase className="w-32 h-32 rotate-12" />
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-fade-in-up">
+      {/* Portfolio Assessment */}
+      <div className="bg-white border border-[#E2D9CC] rounded-2xl p-6 shadow-sm overflow-hidden flex flex-col justify-between">
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-semibold text-[#B8A898] uppercase tracking-wide font-sans">Portfolio Level</span>
+            <Award className="h-5 w-5 text-[#8B6F47]" />
+          </div>
+          <div className={`inline-block px-4 py-1.5 rounded-full border text-2xl font-bold ${getAssessmentStyle(assessment)}`}>
+            {assessment || 'Good'}
+          </div>
         </div>
-        
-        <div className="relative h-full flex flex-col justify-between">
-          <div className="flex items-center justify-between mb-12">
-            <div className="p-4 rounded-[1.2rem] bg-blue-50 text-blue-600 shadow-sm">
-               <UserCheck className="h-6 w-6" />
-            </div>
-          </div>
+        <p className="mt-6 text-sm text-[#5C4D3A] leading-relaxed italic">
+          {summary || "Strategic overview based on multi-dimensional repository signals."}
+        </p>
+      </div>
 
-          <div className="space-y-6">
-            <p className="text-[10px] font-black text-slate-300 uppercase tracking-[0.2em]">Portfolio Level</p>
-            <div className="flex flex-col gap-4">
-              <div className="flex items-center gap-3">
-                <span className={`text-5xl font-black tracking-tight px-6 py-2 rounded-2xl border-2 ${getAssessmentColor(assessment)}`}>
-                  {assessment || 'Analyzing...'}
-                </span>
-              </div>
-              {summary && (
-                <p className="text-slate-500 text-sm leading-relaxed font-medium italic border-l-2 border-slate-100 pl-4 mt-2">
-                  "{summary}"
-                </p>
-              )}
-            </div>
+      {/* Hireability Status */}
+      <div className="bg-white border border-[#E2D9CC] rounded-2xl p-6 shadow-sm flex flex-col justify-between">
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-semibold text-[#B8A898] uppercase tracking-wide font-sans">Market Ready</span>
+            <UserCheck className="h-5 w-5 text-[#8B6F47]" />
           </div>
+          <div className={`inline-block px-4 py-1.5 rounded-full border text-2xl font-bold ${getAssessmentStyle(hireability)}`}>
+            {hireability || 'Borderline'}
+          </div>
+        </div>
+        <div className="mt-6 flex items-center gap-3">
+           <div className="p-2 bg-[#EDE6DC] rounded-xl text-[#8B6F47]">
+              <Zap className="h-4 w-4" />
+           </div>
+           <p className="text-xs text-[#8B7A66] font-medium font-sans uppercase tracking-[0.1em]">Signal Priority: High</p>
         </div>
       </div>
 
-      {/* Secondary Metric Cards Container */}
-      <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-12">
-        {/* Analyzed Repos */}
-        <div className="bg-white rounded-[2.5rem] p-10 md:p-12 shadow-[0_20px_50px_rgba(0,0,0,0.02)] flex items-center space-x-8 border border-slate-50/50">
-          <div className="p-6 rounded-[1.5rem] text-emerald-600 bg-emerald-50/50 shadow-sm shadow-emerald-100">
-            <Target className="h-10 w-10" />
-          </div>
-          <div>
-            <p className="text-[10px] font-black text-slate-300 uppercase tracking-[0.2em] mb-2">Total Analysis</p>
-            <h3 className="text-5xl font-black text-slate-900 tracking-tight">{totalProjects}</h3>
-            <p className="text-xs text-slate-400 mt-2 font-medium">Original repositories</p>
-          </div>
+      {/* Stats QuickView */}
+      <div className="bg-white border border-[#E2D9CC] rounded-2xl p-6 shadow-sm flex flex-col justify-between gap-6">
+        <div className="flex items-center justify-between">
+           <span className="text-xs font-semibold text-[#B8A898] uppercase tracking-wide font-sans">Analysis Scope</span>
+           <Briefcase className="h-5 w-5 text-[#8B6F47]" />
         </div>
-
-        {/* Standout Projects */}
-        <div className="bg-white rounded-[2.5rem] p-10 md:p-12 shadow-[0_20px_50px_rgba(0,0,0,0.02)] flex items-center space-x-8 border border-slate-50/50">
-          <div className="p-6 rounded-[1.5rem] text-amber-600 bg-amber-50/50 shadow-sm shadow-amber-100">
-            <Trophy className="h-10 w-10" />
+        
+        <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-1">
+            <p className="text-3xl font-bold text-[#2A2116] leading-none">{totalProjects || 0}</p>
+            <p className="text-[10px] text-[#B8A898] font-sans uppercase tracking-widest">Total Repos</p>
           </div>
-          <div>
-            <p className="text-[10px] font-black text-slate-300 uppercase tracking-[0.2em] mb-2">Top Tier</p>
-            <h3 className="text-5xl font-black text-slate-900 tracking-tight">{topProjectsCount}</h3>
-            <p className="text-xs text-slate-400 mt-2 font-medium">Standout original works</p>
+          <div className="space-y-1">
+            <p className="text-3xl font-bold text-[#2A2116] leading-none">{topProjectsCount || 0}</p>
+            <p className="text-[10px] text-[#B8A898] font-sans uppercase tracking-widest">Targeted Deep-Dives</p>
           </div>
         </div>
       </div>

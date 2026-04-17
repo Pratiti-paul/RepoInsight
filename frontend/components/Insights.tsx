@@ -1,5 +1,5 @@
 import React from 'react';
-import { ThumbsUp, AlertTriangle, Lightbulb, UserMinus } from 'lucide-react';
+import { Target, AlertTriangle, Lightbulb, Star, Construction } from 'lucide-react';
 
 interface TopProjectData {
   name: string;
@@ -10,72 +10,73 @@ interface InsightsProps {
   strengths: string[];
   weaknesses: string[];
   missing_skills: string[];
-  red_flags?: string[];
   top_projects: TopProjectData[];
 }
 
-export default function Insights({
-  strengths,
-  weaknesses,
-  missing_skills,
-  red_flags,
-  top_projects,
-}: InsightsProps) {
-  const ListSection = ({ title, items, icon: Icon, colorClass }: { title: string, items: string[], icon: any, colorClass: string }) => {
-    if (!items || items.length === 0) return null;
-    return (
-      <div className="space-y-6">
-        <div className="flex items-center space-x-3">
-          <Icon className={`h-4 w-4 ${colorClass}`} />
-          <h4 className="text-xs font-black text-slate-400 uppercase tracking-[0.2em]">{title}</h4>
-        </div>
-        <ul className="space-y-4">
-          {items.map((item, index) => (
-            <li key={index} className="flex items-start">
-              <span className={`inline-block w-1 h-1 rounded-full mt-2 mr-3 flex-shrink-0 ${colorClass.replace('text-', 'bg-')}`} />
-              <span className="text-slate-600 text-sm leading-loose font-medium">{item}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
-    );
-  };
-
+export default function Insights({ strengths, weaknesses, missing_skills, top_projects }: InsightsProps) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-      {/* Left Column: Positive/Negative signals */}
-      <div className="bg-white rounded-[2.5rem] p-10 md:p-12 shadow-[0_20px_50px_rgba(0,0,0,0.02)] space-y-16">
-        <ListSection title="Strengths" items={strengths} icon={ThumbsUp} colorClass="text-emerald-500" />
-        <ListSection title="Major Weaknesses" items={weaknesses} icon={AlertTriangle} colorClass="text-amber-500" />
-        {red_flags && red_flags.length > 0 && (
-          <ListSection title="Critical Red Flags" items={red_flags} icon={AlertTriangle} colorClass="text-red-500" />
-        )}
-      </div>
-
-      {/* Right Column: Growth & Recommendations */}
-      <div className="bg-white rounded-[2.5rem] p-10 md:p-12 shadow-[0_20px_50px_rgba(0,0,0,0.02)] space-y-16">
-        <ListSection title="Growth Opportunities" items={missing_skills} icon={UserMinus} colorClass="text-purple-500" />
-        
-        <div className="space-y-6">
-          <div className="flex items-center space-x-3">
-            <Lightbulb className="h-4 w-4 text-blue-500" />
-            <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Strategy Recommendations</h4>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-20">
+      {/* Portfolio Analysis */}
+      <div className="bg-white border border-[#E2D9CC] rounded-2xl p-6 shadow-sm space-y-8 animate-fade-in-up">
+        <div className="flex items-center gap-3 border-b border-[#EDE6DC] pb-4">
+          <div className="p-2 bg-[#EDE6DC] rounded-xl text-[#8B6F47]">
+            <Target className="h-5 w-5" />
           </div>
-          <ul className="space-y-8">
-            {top_projects && top_projects.map((project, index) => (
-              <li key={index} className="flex flex-col space-y-2">
-                <div className="font-bold text-slate-800 text-sm flex items-center">
-                  <span className="inline-block w-1 h-1 rounded-full mr-3 flex-shrink-0 bg-blue-500" />
-                  {project.name}
-                </div>
-                <div className="text-slate-500 text-xs leading-loose pl-4 font-medium italic">
-                  "{project.reasoning}"
-                </div>
-              </li>
-            ))}
-          </ul>
+          <h3 className="text-base font-bold text-[#2A2116] uppercase tracking-[0.15em] font-sans">Core Analysis</h3>
+        </div>
+
+        <div className="space-y-6">
+          <Section label="Key Differentiators" items={strengths} color="#4A7C40" icon={<Star className="w-3 h-3" />} />
+          <Section label="Growth Areas" items={weaknesses} color="#B85040" icon={<AlertTriangle className="w-3 h-3" />} />
+          <Section label="Missing Tech Stack" items={missing_skills} color="#5A519C" icon={<Construction className="w-3 h-3" />} />
         </div>
       </div>
+
+      {/* Recruiter Picks */}
+      <div className="bg-white border border-[#E2D9CC] rounded-2xl p-6 shadow-sm space-y-8 animate-fade-in-up transition-all" style={{ animationDelay: '0.2s' }}>
+        <div className="flex items-center gap-3 border-b border-[#EDE6DC] pb-4">
+          <div className="p-2 bg-[#EDE6DC] rounded-xl text-[#8B6F47]">
+            <Lightbulb className="h-5 w-5" />
+          </div>
+          <h3 className="text-base font-bold text-[#2A2116] uppercase tracking-[0.15em] font-sans">Recruiter Recommendations</h3>
+        </div>
+
+        <div className="space-y-6">
+          <div className="space-y-4">
+            <p className="text-xs font-bold text-[#8B6F47] uppercase tracking-widest font-sans px-1">Top Project Highlights</p>
+            <div className="space-y-3">
+              {top_projects.map((proj, idx) => (
+                <div key={idx} className="p-4 bg-[#F7F3ED] rounded-xl border border-[#E2D9CC] group hover:border-[#D9CEBD] transition-all">
+                  <h4 className="text-sm font-bold text-[#2A2116] mb-1">{proj.name}</h4>
+                  <p className="text-xs text-[#8B7A66] italic font-medium leading-relaxed">
+                    "{proj.reasoning}"
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Section({ label, items, color, icon }: { label: string, items: string[], color: string, icon: React.ReactNode }) {
+  if (!items || items.length === 0) return null;
+  
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center gap-2 px-1">
+         <span className="text-xs font-bold uppercase tracking-widest font-sans" style={{ color }}>{label}</span>
+      </div>
+      <ul className="grid grid-cols-1 gap-2">
+        {items.map((item, id) => (
+          <li key={id} className="flex items-start gap-3 p-2 group transition-colors">
+            <div className="mt-1.5 w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: color }} />
+            <span className="text-[#5C4D3A] text-sm leading-relaxed font-medium">{item}</span>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }

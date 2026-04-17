@@ -92,17 +92,17 @@ export default function Home() {
 
   return (
     <main className="w-full pt-12 pb-24 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-6xl mx-auto space-y-24">
+      <div className="max-w-6xl mx-auto space-y-10">
         
         {/* Hero Section */}
         <div className="text-center space-y-6 mb-12">
-          <div className="inline-flex items-center justify-center p-3 bg-blue-50 border border-blue-100 rounded-2xl mb-2">
-            <Github className="h-10 w-10 text-blue-600" />
+          <div className="inline-flex items-center justify-center p-3 bg-[#EDE6DC] border border-[#D9CEBD] rounded-xl mb-2">
+            <Github className="h-8 w-8 text-[#2A2116]" />
           </div>
-          <h1 className="text-5xl md:text-6xl font-extrabold text-slate-900 tracking-tight">
-            Analyze Your GitHub Like a <span className="text-blue-600">Recruiter</span>
+          <h1 className="text-4xl md:text-5xl font-bold text-[#2A2116] tracking-tight leading-[1.15]">
+            Analyze Your GitHub Like a <span className="text-[#8B6F47]">Recruiter</span>
           </h1>
-          <p className="text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed font-medium">
+          <p className="text-lg text-[#5C4D3A] max-w-2xl mx-auto leading-relaxed font-medium">
             Get deep insights on your projects, skills, and hireability in seconds.
           </p>
 
@@ -111,32 +111,30 @@ export default function Home() {
           </div>
 
           {!data && !isLoading && !error && (
-            <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 mt-8 text-sm font-medium text-slate-600">
-              <span className="flex items-center gap-1.5"><Check className="w-5 h-5 text-green-500"/> Analyzes top 10 repositories</span>
-              <span className="flex items-center gap-1.5"><Check className="w-5 h-5 text-green-500"/> AI-powered insights</span>
-              <span className="flex items-center gap-1.5"><Check className="w-5 h-5 text-green-500"/> Recruiter-style feedback</span>
-              <span className="flex items-center gap-1.5"><Check className="w-5 h-5 text-green-500"/> Actionable improvements</span>
+            <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 mt-8 text-xs font-medium text-[#8B7A66] font-sans">
+              <span className="flex items-center gap-1.5"><Check className="w-4 h-4 text-[#8B6F47]"/> Analyzes top 10 repositories</span>
+              <span className="flex items-center gap-1.5"><Check className="w-4 h-4 text-[#8B6F47]"/> AI-powered insights</span>
+              <span className="flex items-center gap-1.5"><Check className="w-4 h-4 text-[#8B6F47]"/> Recruiter-style feedback</span>
+              <span className="flex items-center gap-1.5"><Check className="w-4 h-4 text-[#8B6F47]"/> Actionable improvements</span>
             </div>
           )}
         </div>
 
         {/* Error State */}
         {error && (
-          <div className="max-w-2xl mx-auto p-8 bg-white border-2 border-red-100 rounded-3xl shadow-[0_8px_30px_rgb(220,38,38,0.05)] animate-in fade-in slide-in-from-top-4 duration-500">
-            <div className="flex flex-col items-center text-center space-y-4">
-              <div className="p-3 bg-red-50 rounded-full text-red-600">
-                 <Check className="h-8 w-8" />
-              </div>
-              <div className="space-y-2">
-                <h3 className="text-xl font-bold text-slate-900">{error}</h3>
-              </div>
-            </div>
+          <div className="max-w-2xl mx-auto p-8 bg-white border border-[#E2D9CC] rounded-2xl shadow-sm animate-in fade-in slide-in-from-top-4 duration-500 text-center space-y-4">
+             <div className="flex flex-col items-center">
+                <div className="p-3 bg-[#F5E8E4] rounded-full text-[#B85040] mb-4">
+                   <Github className="h-6 w-6" />
+                </div>
+                <h3 className="text-xl font-bold text-[#2A2116]">{error}</h3>
+             </div>
           </div>
         )}
 
         {/* Landing Page Content */}
         {!data && !isLoading && !error && (
-          <div className="space-y-24 pb-12 animate-in fade-in duration-500">
+          <div className="space-y-10 pb-12 animate-in fade-in duration-500">
              <Features />
              <HowItWorks />
           </div>
@@ -147,20 +145,20 @@ export default function Home() {
 
         {/* Results Dashboard */}
         {data && !isLoading && (
-          <div className="animate-in fade-in slide-in-from-bottom-8 duration-700 ease-out space-y-20">
+          <div className="animate-in fade-in slide-in-from-bottom-8 duration-700 ease-out space-y-10">
             
             {/* Share & Header */}
-            <div className="flex flex-col md:flex-row items-center justify-between gap-6 pb-4 border-b border-slate-100">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-6 pb-4 border-b border-[#E2D9CC]">
                <div>
-                 <h2 className="text-3xl font-black text-slate-900 tracking-tight">Recruiter Report for @{searchedUsername}</h2>
-                 <p className="text-slate-400 text-sm font-medium mt-1 italic">Personalized AI evaluation and professional signals</p>
+                 <h2 className="text-2xl font-bold text-[#2A2116] tracking-tight">Recruiter Report for @{searchedUsername}</h2>
+                 <p className="text-[#B8A898] text-xs font-medium mt-1 italic font-sans">Personalized AI evaluation and professional signals</p>
                </div>
                <div className="flex items-center gap-4">
                  <button 
                   onClick={handleShare}
-                  className={`flex items-center gap-2 px-6 py-3 ${copied ? 'bg-emerald-500 shadow-emerald-100' : 'bg-blue-600 shadow-blue-100/50'} text-white font-bold rounded-2xl transition-all shadow-lg hover:scale-105 active:scale-95`}
+                  className={`flex items-center gap-2 px-6 py-2.5 ${copied ? 'bg-[#4A7C40]' : 'bg-[#2A2116]'} text-[#F7F3ED] text-sm font-bold rounded-xl transition-all shadow-sm hover:translate-y-[-1px] active:translate-y-[0px]`}
                  >
-                   {copied ? <Check className="w-4 h-4" /> : <Share2 className="w-4 h-4" />}
+                   {copied ? <Check className="w-3.5 h-3.5" /> : <Share2 className="w-3.5 h-3.5" />}
                    {copied ? 'Link Copied!' : 'Share Review Link'}
                  </button>
                </div>
@@ -175,7 +173,7 @@ export default function Home() {
             />
 
             {/* Visual Analytics Row */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <div className="lg:col-span-2">
                 <ContributionHeatmap 
                   total={data.metrics?.contribution_heatmap?.total || 0}

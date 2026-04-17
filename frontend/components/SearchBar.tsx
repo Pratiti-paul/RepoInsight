@@ -1,5 +1,7 @@
+'use client';
+
 import React, { useState } from 'react';
-import { Search } from 'lucide-react';
+import { Search, Loader2 } from 'lucide-react';
 
 interface SearchBarProps {
   onSearch: (username: string) => void;
@@ -17,27 +19,33 @@ export default function SearchBar({ onSearch, isLoading }: SearchBarProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="w-full max-w-xl mx-auto mb-8 relative">
-      <div className="relative flex items-center">
-        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-          <Search className="h-5 w-5 text-slate-400" />
+    <div className="w-full max-w-2xl mx-auto">
+      <form onSubmit={handleSubmit} className="relative group p-1 bg-white border border-[#E2D9CC] rounded-xl shadow-sm transition-all focus-within:border-[#D9CEBD] focus-within:shadow-md">
+        <div className="flex items-center gap-2">
+          <div className="pl-4 text-[#B8A898]">
+            <Search className="h-5 w-5" />
+          </div>
+          <input
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            disabled={isLoading}
+            placeholder="Enter a GitHub username..."
+            className="w-full py-4 bg-transparent border-none text-[#2A2116] placeholder-[#B8A898] focus:ring-0 text-lg font-medium outline-none"
+          />
+          <button
+            type="submit"
+            disabled={isLoading || !username.trim()}
+            className="mr-1 px-8 py-3 bg-[#2A2116] text-[#F7F3ED] font-bold rounded-lg hover:bg-[#3D3020] transition-all dropdown-shadow active:scale-95 disabled:opacity-50 disabled:active:scale-100 flex items-center justify-center min-w-[120px]"
+          >
+            {isLoading ? (
+              <Loader2 className="h-5 w-5 animate-spin" />
+            ) : (
+              'Analyze'
+            )}
+          </button>
         </div>
-        <input
-          type="text"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          placeholder="Enter GitHub username (e.g., torvalds)"
-          className="block w-full pl-11 pr-32 py-4 bg-white border border-slate-200 rounded-2xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm transition-all text-lg"
-          disabled={isLoading}
-        />
-        <button
-          type="submit"
-          disabled={isLoading || !username.trim()}
-          className="absolute right-2 top-2 bottom-2 px-6 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-        >
-          Analyze
-        </button>
-      </div>
-    </form>
+      </form>
+    </div>
   );
 }
