@@ -90,16 +90,29 @@ export default function Home() {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const handleReset = () => {
+    setData(null);
+    setError(null);
+    setSearchedUsername(null);
+    setIsLoading(false);
+  };
+
   return (
     <main className="w-full pt-12 pb-24 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto space-y-10">
         
         {/* Hero Section */}
-        <div className="text-center space-y-6 mb-12">
-          <div className="inline-flex items-center justify-center p-3 bg-[#EDE6DC] border border-[#D9CEBD] rounded-xl mb-2">
+        <div className="text-center space-y-6">
+          <div 
+            onClick={handleReset}
+            className="inline-flex items-center justify-center p-3 bg-[#EDE6DC] border border-[#D9CEBD] rounded-xl mb-2 cursor-pointer hover:scale-105 transition-transform"
+          >
             <Github className="h-8 w-8 text-[#2A2116]" />
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold text-[#2A2116] tracking-tight leading-[1.15]">
+          <h1 
+            onClick={handleReset}
+            className="text-4xl md:text-5xl font-bold text-[#2A2116] tracking-tight leading-[1.15] cursor-pointer"
+          >
             Analyze Your GitHub Like a <span className="text-[#8B6F47]">Recruiter</span>
           </h1>
           <p className="text-lg text-[#5C4D3A] max-w-2xl mx-auto leading-relaxed font-medium">
@@ -110,14 +123,12 @@ export default function Home() {
              <SearchBar onSearch={handleSearch} isLoading={isLoading} />
           </div>
 
-          {!data && !isLoading && !error && (
-            <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 mt-8 text-xs font-medium text-[#8B7A66] font-sans">
-              <span className="flex items-center gap-1.5"><Check className="w-4 h-4 text-[#8B6F47]"/> Analyzes top 10 repositories</span>
-              <span className="flex items-center gap-1.5"><Check className="w-4 h-4 text-[#8B6F47]"/> AI-powered insights</span>
-              <span className="flex items-center gap-1.5"><Check className="w-4 h-4 text-[#8B6F47]"/> Recruiter-style feedback</span>
-              <span className="flex items-center gap-1.5"><Check className="w-4 h-4 text-[#8B6F47]"/> Actionable improvements</span>
-            </div>
-          )}
+          <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 mt-8 text-xs font-medium text-[#8B7A66] font-sans">
+            <span className="flex items-center gap-1.5"><Check className="w-4 h-4 text-[#8B6F47]"/> Analyzes top 10 repositories</span>
+            <span className="flex items-center gap-1.5"><Check className="w-4 h-4 text-[#8B6F47]"/> AI-powered insights</span>
+            <span className="flex items-center gap-1.5"><Check className="w-4 h-4 text-[#8B6F47]"/> Recruiter-style feedback</span>
+            <span className="flex items-center gap-1.5"><Check className="w-4 h-4 text-[#8B6F47]"/> Actionable improvements</span>
+          </div>
         </div>
 
         {/* Error State */}
@@ -128,6 +139,12 @@ export default function Home() {
                    <Github className="h-6 w-6" />
                 </div>
                 <h3 className="text-xl font-bold text-[#2A2116]">{error}</h3>
+                <button 
+                  onClick={handleReset}
+                  className="mt-4 text-sm font-bold text-[#8B6F47] hover:underline"
+                >
+                  Try another username
+                </button>
              </div>
           </div>
         )}
@@ -153,7 +170,13 @@ export default function Home() {
                  <h2 className="text-2xl font-bold text-[#2A2116] tracking-tight">Recruiter Report for @{searchedUsername}</h2>
                  <p className="text-[#B8A898] text-xs font-medium mt-1 italic font-sans">Personalized AI evaluation and professional signals</p>
                </div>
-               <div className="flex items-center gap-4">
+               <div className="flex items-center gap-3">
+                 <button 
+                  onClick={handleReset}
+                  className="flex items-center gap-2 px-6 py-2.5 bg-[#EDE6DC] text-[#2A2116] text-sm font-bold rounded-xl transition-all border border-[#D9CEBD] hover:bg-[#D9CEBD]"
+                 >
+                   New Search
+                 </button>
                  <button 
                   onClick={handleShare}
                   className={`flex items-center gap-2 px-6 py-2.5 ${copied ? 'bg-[#4A7C40]' : 'bg-[#2A2116]'} text-[#F7F3ED] text-sm font-bold rounded-xl transition-all shadow-sm hover:translate-y-[-1px] active:translate-y-[0px]`}
