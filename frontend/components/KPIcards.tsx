@@ -4,15 +4,12 @@ import { Target, Trophy, Briefcase, UserCheck } from 'lucide-react';
 interface KPIcardsProps {
   assessment?: string;
   hireability?: string;
-  summary?: string;
   totalProjects: number;
   topProjectsCount: number;
 }
 
 export default function KPIcards({ 
   assessment, 
-  hireability, 
-  summary,
   totalProjects, 
   topProjectsCount 
 }: KPIcardsProps) {
@@ -25,69 +22,55 @@ export default function KPIcards({
     return 'bg-red-100 text-red-700 border-red-200';
   };
 
-  const getHireabilityColor = (val?: string) => {
-    const v = val?.toLowerCase();
-    if (v === 'hireable') return 'bg-green-500 text-white';
-    if (v === 'borderline') return 'bg-amber-500 text-white';
-    return 'bg-slate-400 text-white';
-  };
-
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
       {/* Primary Assessment Card */}
-      <div className="lg:col-span-1 bg-white rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 flex flex-col justify-between relative overflow-hidden group">
-        <div className="absolute top-0 right-0 p-6 opacity-[0.03] group-hover:opacity-[0.05] transition-opacity">
+      <div className="lg:col-span-1 bg-white rounded-[2.5rem] p-10 md:p-12 shadow-[0_20px_50px_rgba(0,0,0,0.02)] relative overflow-hidden group border border-slate-50/50">
+        <div className="absolute top-0 right-0 p-8 opacity-[0.02] group-hover:opacity-[0.04] transition-opacity">
            <Briefcase className="w-32 h-32 rotate-12" />
         </div>
         
-        <div className="relative">
-          <div className="flex items-center justify-between mb-8">
-            <div className="p-3 rounded-2xl bg-blue-50 text-blue-600">
+        <div className="relative h-full flex flex-col justify-between">
+          <div className="flex items-center justify-between mb-12">
+            <div className="p-4 rounded-[1.2rem] bg-blue-50 text-blue-600 shadow-sm">
                <UserCheck className="h-6 w-6" />
             </div>
-            {hireability && (
-              <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest shadow-sm ${getHireabilityColor(hireability)}`}>
-                {hireability}
-              </span>
-            )}
           </div>
 
-          <div className="space-y-4 mb-8">
-            <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">Portfolio Level</p>
+          <div className="space-y-6">
+            <p className="text-[10px] font-black text-slate-300 uppercase tracking-[0.2em]">Portfolio Level</p>
             <div className="flex items-center gap-3">
-              <span className={`text-4xl font-black tracking-tight px-4 py-1 rounded-2xl border-2 ${getAssessmentColor(assessment)}`}>
+              <span className={`text-5xl font-black tracking-tight px-6 py-2 rounded-2xl border-2 ${getAssessmentColor(assessment)}`}>
                 {assessment || 'Analyzing...'}
               </span>
             </div>
           </div>
         </div>
-
-
       </div>
 
       {/* Secondary Metric Cards Container */}
-      <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-12">
         {/* Analyzed Repos */}
-        <div className="bg-white rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 flex items-center space-x-6">
-          <div className="p-5 rounded-2xl text-emerald-600 bg-emerald-50">
+        <div className="bg-white rounded-[2.5rem] p-10 md:p-12 shadow-[0_20px_50px_rgba(0,0,0,0.02)] flex items-center space-x-8 border border-slate-50/50">
+          <div className="p-6 rounded-[1.5rem] text-emerald-600 bg-emerald-50/50 shadow-sm shadow-emerald-100">
             <Target className="h-10 w-10" />
           </div>
           <div>
-            <p className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-1">Total Analysis</p>
-            <h3 className="text-4xl font-black text-slate-900">{totalProjects}</h3>
-            <p className="text-xs text-slate-500 mt-1 font-medium">Original repositories</p>
+            <p className="text-[10px] font-black text-slate-300 uppercase tracking-[0.2em] mb-2">Total Analysis</p>
+            <h3 className="text-5xl font-black text-slate-900 tracking-tight">{totalProjects}</h3>
+            <p className="text-xs text-slate-400 mt-2 font-medium">Original repositories</p>
           </div>
         </div>
 
         {/* Standout Projects */}
-        <div className="bg-white rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 flex items-center space-x-6">
-          <div className="p-5 rounded-2xl text-amber-600 bg-amber-50">
+        <div className="bg-white rounded-[2.5rem] p-10 md:p-12 shadow-[0_20px_50px_rgba(0,0,0,0.02)] flex items-center space-x-8 border border-slate-50/50">
+          <div className="p-6 rounded-[1.5rem] text-amber-600 bg-amber-50/50 shadow-sm shadow-amber-100">
             <Trophy className="h-10 w-10" />
           </div>
           <div>
-            <p className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-1">Top Tier</p>
-            <h3 className="text-4xl font-black text-slate-900">{topProjectsCount}</h3>
-            <p className="text-xs text-slate-500 mt-1 font-medium">Standout original works</p>
+            <p className="text-[10px] font-black text-slate-300 uppercase tracking-[0.2em] mb-2">Top Tier</p>
+            <h3 className="text-5xl font-black text-slate-900 tracking-tight">{topProjectsCount}</h3>
+            <p className="text-xs text-slate-400 mt-2 font-medium">Standout original works</p>
           </div>
         </div>
       </div>

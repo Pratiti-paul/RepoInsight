@@ -71,7 +71,7 @@ export default function Home() {
 
   return (
     <main className="w-full pt-12 pb-24 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-6xl mx-auto space-y-8">
+      <div className="max-w-5xl mx-auto space-y-24">
         
         {/* Hero Section */}
         <div className="text-center space-y-6 mb-12">
@@ -81,7 +81,7 @@ export default function Home() {
           <h1 className="text-5xl md:text-6xl font-extrabold text-slate-900 tracking-tight">
             Analyze Your GitHub Like a <span className="text-blue-600">Recruiter</span>
           </h1>
-          <p className="text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed font-medium">
             Get deep insights on your projects, skills, and hireability in seconds.
           </p>
 
@@ -126,10 +126,8 @@ export default function Home() {
         )}
 
         {/* Landing Page Content (Hides when searching or viewing results) */}
-        {!data && !isLoading && (
+        {!data && !isLoading && !error && (
           <div className="space-y-24 pb-12 animate-in fade-in duration-500">
-
-
              <Features />
              <HowItWorks />
           </div>
@@ -140,7 +138,7 @@ export default function Home() {
 
         {/* Results Dashboard */}
         {data && !isLoading && (
-          <div className="animate-in fade-in slide-in-from-bottom-8 duration-700 ease-out">
+          <div className="animate-in fade-in slide-in-from-bottom-8 duration-700 ease-out space-y-24">
             <KPIcards 
               assessment={data.overall_portfolio_assessment?.level}
               hireability={data.overall_portfolio_assessment?.hireability}
@@ -155,12 +153,10 @@ export default function Home() {
               strengths={data.strengths || []}
               weaknesses={data.weaknesses || []}
               missing_skills={data.missing_skills || []}
-              red_flags={data.red_flags || []}
               top_projects={data.top_projects || []}
             />
           </div>
         )}
-
       </div>
     </main>
   );
