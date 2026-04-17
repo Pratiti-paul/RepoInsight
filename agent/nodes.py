@@ -194,11 +194,10 @@ QUALITY RUBRIC (use this strictly):
 - Strong: README + tests or CI/CD, clear architecture, non-trivial original logic
 
 SCORING RUBRIC (score each project out of 10):
-- Code complexity & originality: 0-3 pts (0 = copied tutorial, 3 = original non-trivial logic)
-- Project completeness: 0-2 pts (0 = abandoned/empty, 2 = working with README and clear purpose)
-- Best practices: 0-2 pts (0 = none, 2 = has tests, CI/CD, or meaningful commit history)
-- Real-world usefulness: 0-2 pts (0 = no practical use, 2 = solves a real problem)
-- Documentation quality: 0-1 pt (0 = no README, 1 = clear README with setup instructions)
+- Impact: 0-3 pts (0 = tutorial/tiny, 3 = high real-world relevance, solved a non-trivial problem)
+- Complexity: 0-3 pts (0 = trivial logic, 3 = original complex algorithms, system architecture, or multithreading)
+- Readability: 0-2 pts (0 = messy/unorganized, 2 = clear structure, naming, and meaningful documentation)
+- Consistency: 0-2 pts (0 = erratic style/commit history, 2 = professional, consistent coding patterns)
 
 STRICT RULES:
 - Base ALL analysis ONLY on the provided developer profile and repository statistics.
@@ -226,11 +225,10 @@ Return STRICT JSON only:
     "score": {{
       "total": 0,
       "breakdown": {{
-        "complexity_originality": 0,
-        "completeness": 0,
-        "best_practices": 0,
-        "real_world_usefulness": 0,
-        "documentation": 0
+        "impact": 0,
+        "complexity": 0,
+        "readability": 0,
+        "consistency": 0
       }},
       "justification": ""
     }},
@@ -247,7 +245,8 @@ Return STRICT JSON only:
   "red_flags": [],
   "overall_portfolio_score": {{
     "score": 0.0,
-    "summary": "Assess hireability (High/Medium/Low) and explain reasoning here."
+    "level": "High | Medium | Low",
+    "summary": "Explain reasoning for the score and hireability level here."
   }}
 }}"""
 

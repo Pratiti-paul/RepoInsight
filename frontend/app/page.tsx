@@ -18,11 +18,12 @@ interface TopProjectData {
 
 interface OverallPortfolioScore {
   score: number;
+  level: string;
   summary: string;
 }
 
 interface PortfolioData {
-  projects?: ProjectData[];
+  projects?: any[]; // We'll update the Project interior in Projects.tsx or here
   top_projects?: TopProjectData[];
   strengths?: string[];
   weaknesses?: string[];
@@ -125,7 +126,9 @@ export default function Home() {
         {data && !isLoading && (
           <div className="animate-in fade-in slide-in-from-bottom-8 duration-700 ease-out">
             <KPIcards 
-              overallScore={data.overall_portfolio_score?.score} 
+              portfolioScore={data.overall_portfolio_score?.score}
+              portfolioLevel={data.overall_portfolio_score?.level}
+              portfolioSummary={data.overall_portfolio_score?.summary}
               totalProjects={data.projects?.length || 0}
               topProjectsCount={data.top_projects?.length || 0}
             />
