@@ -11,13 +11,27 @@ import Insights from '../components/Insights';
 import Projects, { ProjectData } from '../components/Projects';
 import Loader from '../components/Loader';
 
+interface TopProjectData {
+  name: string;
+  reasoning: string;
+}
+
+interface HireabilityData {
+  level: string;
+  confidence: string;
+  reasoning: string;
+  suitable_roles: string[];
+  not_suitable_for: string[];
+}
+
 interface PortfolioData {
   projects?: ProjectData[];
-  top_projects?: string[];
+  top_projects?: TopProjectData[];
   strengths?: string[];
   weaknesses?: string[];
   missing_skills?: string[];
-  hireability?: string;
+  red_flags?: string[];
+  hireability?: HireabilityData;
 }
 
 export default function Home() {
@@ -114,7 +128,7 @@ export default function Home() {
         {data && !isLoading && (
           <div className="animate-in fade-in slide-in-from-bottom-8 duration-700 ease-out">
             <KPIcards 
-              hireability={data.hireability || 'Unknown'} 
+              hireability={data.hireability?.level || 'Unknown'} 
               totalProjects={data.projects?.length || 0}
               topProjectsCount={data.top_projects?.length || 0}
             />
@@ -125,6 +139,7 @@ export default function Home() {
               strengths={data.strengths || []}
               weaknesses={data.weaknesses || []}
               missing_skills={data.missing_skills || []}
+              red_flags={data.red_flags || []}
               top_projects={data.top_projects || []}
             />
           </div>

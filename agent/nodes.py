@@ -54,7 +54,7 @@ def code_mentor_review(state: ReviewState):
     repos = state.get("github_data", [])
     context = f"GitHub Username: {username}"
     
-    prompt = f"""You are a senior software engineer and hiring manager conducting a portfolio review.
+    prompt = f"""You are a senior software engineer conducting a portfolio review.
 
 DEVELOPER CONTEXT:
 {context}
@@ -67,45 +67,68 @@ QUALITY RUBRIC (use this strictly):
 - Intermediate: has README, organized folders, some abstraction, no tests or CI
 - Strong: README + tests or CI/CD, clear architecture, non-trivial original logic
 
+SCORING RUBRIC (use this to score each project out of 10):
+- Code complexity & originality: 0-3 pts (0 = copied tutorial, 3 = original non-trivial logic)
+- Project completeness: 0-2 pts (0 = abandoned/empty, 2 = working with README and clear purpose)
+- Best practices: 0-2 pts (0 = none, 2 = has tests, CI/CD, or meaningful commit history)
+- Real-world usefulness: 0-2 pts (0 = no practical use, 2 = solves a real problem)
+- Documentation quality: 0-1 pt (0 = no README, 1 = clear README with setup instructions)
+
 STRICT RULES:
 - Base ALL analysis ONLY on the provided repository data
 - If description is missing, say "No description provided" — do NOT invent purpose
 - Be specific: reference actual repo names, languages, and topics
 - Never use phrases like "diverse tech stack" or "strong foundation"
 - Same input must always produce same output
+- Scores must be justified by specific signals in the data, not assigned randomly
 
 TASKS:
-1. For EACH repository: summarize purpose (from description/topics only), identify tech stack, evaluate quality using the rubric above, give 1 specific actionable improvement
+1. For EACH repository:
+   - Summarize purpose (from description and topics only)
+   - Identify tech stack
+   - Evaluate quality using the rubric above
+   - Score it out of 10 using the scoring rubric above, showing the breakdown
+   - Give 1 specific actionable improvement
+
 2. Identify top 3 strongest projects with reasoning tied to specific signals
 3. List technical strengths as patterns you see across multiple repos
 4. List concrete weaknesses (e.g. "0 of 10 repos have tests")
 5. List missing skills based on gaps in the stack
-6. Assess hireability with role fit and confidence level
-7. Flag any red flags honestly
+6. Flag any red flags honestly
+7. Give an OVERALL portfolio score out of 10 (average of all project scores, rounded to 1 decimal)
 
-Return STRICT JSON only, no markdown, no explanation outside JSON:
+Return STRICT JSON only, no markdown, no explanation outside the JSON:
 {{
   "projects": [{{
     "name": "",
     "summary": "",
     "tech_stack": [],
     "quality": "Beginner | Intermediate | Strong",
+    "score": {{
+      "total": 0,
+      "breakdown": {{
+        "complexity_originality": 0,
+        "completeness": 0,
+        "best_practices": 0,
+        "real_world_usefulness": 0,
+        "documentation": 0
+      }},
+      "justification": ""
+    }},
     "improvement": ""
   }}],
   "top_projects": [{{
     "name": "",
+    "score": 0,
     "reasoning": ""
   }}],
   "strengths": [],
   "weaknesses": [],
   "missing_skills": [],
   "red_flags": [],
-  "hireability": {{
-    "level": "Junior | Mid | Senior",
-    "confidence": "Low | Medium | High",
-    "reasoning": "",
-    "suitable_roles": [],
-    "not_suitable_for": []
+  "overall_portfolio_score": {{
+    "score": 0.0,
+    "summary": ""
   }}
 }}"""
 
@@ -134,12 +157,9 @@ Return STRICT JSON only, no markdown, no explanation outside JSON:
             "weaknesses": ["Failed to parse AI response. Please try again."],
             "missing_skills": [],
             "red_flags": [],
-            "hireability": {
-                "level": "Unknown",
-                "confidence": "Low",
-                "reasoning": "Parse failure.",
-                "suitable_roles": [],
-                "not_suitable_for": []
+            "overall_portfolio_score": {
+                "score": 0.0,
+                "summary": "Parse failure."
             }
         }
 
