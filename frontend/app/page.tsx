@@ -71,15 +71,23 @@ export default function Home() {
       setData(response.data as PortfolioData);
     } catch (err: any) {
       console.error("Error fetching data:", err);
-      const detail = err.response?.data?.detail;
       
       if (err.response?.status === 404) {
-        setError(`GitHub user "${cleanUsername}" not found.`);
+        // Handle custom 404 structure or fallback
+        setError("User not found. Try another username.");
+      } else if (err.response?.status === 400) {
+        setError(err.response?.data?.detail || "Invalid request. Please check the username.");
       } else {
-        setError(detail || "Something went wrong while fetching data. Please try again.");
+        setError("Something went wrong while fetching data. Our servers might be busy.");
       }
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleRetry = () => {
+    if (searchedUsername) {
+      handleSearch(searchedUsername);
     }
   };
 
@@ -146,12 +154,23 @@ export default function Home() {
                    <Github className="h-6 w-6" />
                 </div>
                 <h3 className="text-xl font-bold text-[#2A2116]">{error}</h3>
-                <button 
-                  onClick={handleReset}
-                  className="mt-4 text-sm font-bold text-[#8B6F47] hover:underline"
-                >
-                  Try another username
-                </button>
+                
+                <div className="flex items-center gap-4 mt-6">
+                  <button 
+                    onClick={handleReset}
+                    className="text-sm font-bold text-[#8B6F47] hover:underline"
+                  >
+                    Try another username
+                  </button>
+                  {error.includes("wrong") && (
+                    <button 
+                      onClick={handleRetry}
+                      className="px-6 py-2 bg-[#2A2116] text-[#F7F3ED] text-sm font-bold rounded-xl hover:opacity-90 transition-opacity"
+                    >
+                      Retry Now
+                    </button>
+                  )}
+                </div>
              </div>
           </div>
         )}

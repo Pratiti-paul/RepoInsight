@@ -5,7 +5,7 @@
 </head>
 <body>
 
-<h1>🌟 RepoInsight</h1>
+<h1>RepoInsight</h1>
 
 <p>
 <b>RepoInsight</b> is an AI-powered GitHub portfolio analyzer that evaluates a developer’s profile like a recruiter. 
@@ -14,7 +14,7 @@ It provides structured insights on projects, strengths, weaknesses, tech stack, 
 
 <hr>
 
-<h2>🚀 Features</h2>
+<h2>Features</h2>
 
 <ul>
     <li><b>GitHub Analysis:</b> Analyze any public GitHub username</li>
@@ -27,7 +27,7 @@ It provides structured insights on projects, strengths, weaknesses, tech stack, 
 
 <hr>
 
-<h2>🧠 Tech Stack</h2>
+<h2>Tech Stack</h2>
 
 <h3>Frontend</h3>
 <ul>
@@ -53,7 +53,7 @@ It provides structured insights on projects, strengths, weaknesses, tech stack, 
 
 <hr>
 
-<h2>🧩 Core Functional Modules</h2>
+<h2>Core Functional Modules</h2>
 
 <ul>
     <li><b>Portfolio Analysis Engine:</b> Fetches and filters repositories</li>
@@ -63,7 +63,7 @@ It provides structured insights on projects, strengths, weaknesses, tech stack, 
 
 <hr>
 
-<h2>📂 Project Structure</h2>
+<h2>Project Structure</h2>
 
 <pre>
 RepoInsight/
@@ -94,7 +94,7 @@ RepoInsight/
 
 <hr>
 
-<h2>🔌 API Endpoints</h2>
+<h2>API Endpoints</h2>
 
 <table border="1" cellpadding="6">
 <tr>
@@ -135,7 +135,7 @@ RepoInsight/
 
 <hr>
 
-<h2>⚠️ Edge Case Handling</h2>
+<h2>Edge Case Handling</h2>
 
 <ul>
     <li>Invalid GitHub username → Returns error</li>
@@ -145,7 +145,7 @@ RepoInsight/
 
 <hr>
 
-<h2>🔐 Environment Variables</h2>
+<h2>Environment Variables</h2>
 
 <pre>
 GITHUB_TOKEN=your_github_token
@@ -154,7 +154,7 @@ GROQ_API_KEY=your_groq_api_key
 
 <hr>
 
-<h2>🖥️ Local Development</h2>
+<h2>Local Development</h2>
 
 <h3>Backend</h3>
 
@@ -177,7 +177,7 @@ npm run dev
 
 <hr>
 
-<h2>🧪 How It Works</h2>
+<h2>How It Works</h2>
 
 <ol>
     <li>User enters GitHub username</li>
@@ -190,7 +190,7 @@ npm run dev
 
 <hr>
 
-<h2>📌 Future Improvements</h2>
+<h2>Future Improvements</h2>
 
 <ul>
     <li>Resume generation from GitHub</li>
@@ -201,7 +201,7 @@ npm run dev
 
 <hr>
 
-<h2>⚠️ Disclaimer</h2>
+<h2>Disclaimer</h2>
 
 <p>
 This project is intended for educational and demonstration purposes only. 

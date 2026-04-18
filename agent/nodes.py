@@ -105,6 +105,9 @@ def extract_github_data(state: ReviewState):
         user_resp = requests.get(user_url, headers=headers)
         user_profile = {"name": username, "followers": 0, "public_repos": 0, "created_at": "", "bio": "No bio provided"}
         
+        if user_resp.status_code == 404:
+            return {"github_data": {"error": "User Not Found", "status": 404}}
+        
         if user_resp.status_code == 200:
             u = user_resp.json()
             user_profile = {
@@ -114,6 +117,9 @@ def extract_github_data(state: ReviewState):
                 "created_at": u.get("created_at", ""),
                 "bio": u.get("bio") or "No bio provided"
             }
+        else:
+            # Handle other errors (rate limits, etc.)
+            return {"github_data": {"error": "GitHub API Unavailable", "status": user_resp.status_code}}
 
         # 2. GraphQL for Deep Intelligence (Heatmap + Exact Languages)
         gql_data = fetch_graphql_data(username, headers)

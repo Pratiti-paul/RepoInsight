@@ -2,6 +2,7 @@ import os
 import json
 import logging
 from fastapi import FastAPI, HTTPException
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 import redis
@@ -79,10 +80,19 @@ def get_or_compute_review(username: str):
     # 3. Handle Errors coming from the graph
     github_data_raw = result.get("github_data", {})
     if isinstance(github_data_raw, dict) and "error" in github_data_raw:
-        raise HTTPException(
-            status_code=github_data_raw.get("status", 500),
-            detail=github_data_raw.get("error")
-        )
+        status_code = github_data_raw.get("status", 500)
+        error_msg = github_data_raw.get("error")
+        
+        if status_code == 404:
+            return JSONResponse(
+                status_code=404,
+                content={
+                    "error": "GitHub user not found",
+                    "suggestion": "Check username spelling"
+                }
+            )
+        
+        raise HTTPException(status_code=status_code, detail=error_msg)
 
     # 4. Prepare Unified Response
     feedback = result.get("feedback", {})
@@ -113,12 +123,21 @@ def test_route():
     """Temporary debug route to verify connectivity."""
     return {"status": "ok", "message": "Backend connectivity verified!"}
 
+@app.get("/review")
+def review_info():
+    """Helpful route for direct URL visits."""
+    return {
+        "message": "Use POST /review with JSON body: { \"username\": \"your_github_username\" }"
+    }
+
 @app.get("/review/{username}")
 def get_review(username: str):
     return get_or_compute_review(username)
 
 @app.post("/review")
 def post_review(request: ReviewRequest):
+    if not request.username.strip():
+        raise HTTPException(status_code=400, detail="Username cannot be empty")
     return get_or_compute_review(request.username)
 
 @app.delete("/clear-cache/{username}")
