@@ -73,7 +73,10 @@ export default function Home() {
     setSearchedUsername(cleanUsername);
 
     try {
-      const response = await axios.post(process.env.NEXT_PUBLIC_API_URL + '/review', {
+      const API_URL = process.env.NEXT_PUBLIC_API_URL;
+      console.log("API URL:", API_URL);
+
+      const response = await axios.post(`${API_URL}/review`, {
         username: cleanUsername,
       }, {
         timeout: 60000 // 60 seconds safety

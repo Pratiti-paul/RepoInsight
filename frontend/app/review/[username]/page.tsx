@@ -69,7 +69,12 @@ export default function SharedReviewPage() {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/review/${username}`);
+      const API_URL = process.env.NEXT_PUBLIC_API_URL;
+      console.log("API URL:", API_URL);
+
+      const response = await axios.get(`${API_URL}/review/${username}`, {
+        timeout: 60000 // 60 seconds safety for Render cold starts
+      });
       setData(response.data as PortfolioData);
     } catch (err: any) {
       console.error("Error fetching shared review:", err.message);
