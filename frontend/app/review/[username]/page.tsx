@@ -72,7 +72,7 @@ export default function SharedReviewPage() {
       const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/review/${username}`);
       setData(response.data as PortfolioData);
     } catch (err: any) {
-      console.error("Error fetching shared review:", err);
+      console.error("Error fetching shared review:", err.message);
       const detail = err.response?.data?.detail;
       setError(detail || "Failed to load the review. The user may not exist or the link is invalid.");
     } finally {

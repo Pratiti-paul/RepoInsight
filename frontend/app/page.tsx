@@ -81,7 +81,7 @@ export default function Home() {
 
       setData(response.data as PortfolioData);
     } catch (err: any) {
-      console.error("Error fetching data:", err);
+      console.error("Error fetching data:", err.message);
       
       if (err.code === 'ECONNABORTED') {
         setError("Analysis is taking a while. Please wait a moment and click 'Retry'—it will likely be ready now.");
