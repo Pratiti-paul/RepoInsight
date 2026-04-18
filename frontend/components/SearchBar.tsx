@@ -6,15 +6,16 @@ import { Search, Loader2 } from 'lucide-react';
 interface SearchBarProps {
   onSearch: (username: string) => void;
   isLoading: boolean;
+  value: string;
+  onChange: (value: string) => void;
 }
 
-export default function SearchBar({ onSearch, isLoading }: SearchBarProps) {
-  const [username, setUsername] = useState('');
+export default function SearchBar({ onSearch, isLoading, value, onChange }: SearchBarProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (username.trim()) {
-      onSearch(username.trim());
+    if (value.trim()) {
+      onSearch(value.trim());
     }
   };
 
@@ -27,15 +28,15 @@ export default function SearchBar({ onSearch, isLoading }: SearchBarProps) {
           </div>
           <input
             type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
             disabled={isLoading}
             placeholder="Enter a GitHub username..."
             className="w-full py-4 bg-transparent border-none text-[#2A2116] placeholder-[#B8A898] focus:ring-0 text-lg font-medium outline-none"
           />
           <button
             type="submit"
-            disabled={isLoading || !username.trim()}
+            disabled={isLoading || !value.trim()}
             className="mr-1 px-8 py-3 bg-[#2A2116] text-[#F7F3ED] font-bold rounded-lg hover:bg-[#3D3020] transition-all dropdown-shadow active:scale-95 disabled:opacity-50 disabled:active:scale-100 flex items-center justify-center min-w-[120px]"
           >
             {isLoading ? (

@@ -4,12 +4,12 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams, useRouter } from 'next/navigation';
 import { Github, ArrowLeft, Share2, Check } from 'lucide-react';
-import KPIcards from '../../../components/KPIcards';
-import Insights from '../../../components/Insights';
-import Projects from '../../../components/Projects';
-import Loader from '../../../components/Loader';
-import ContributionHeatmap from '../../../components/ContributionHeatmap';
-import LanguageChart from '../../../components/LanguageChart';
+import KPIcards from '@/components/KPIcards';
+import Insights from '@/components/Insights';
+import Projects from '@/components/Projects';
+import Loader from '@/components/Loader';
+import ContributionHeatmap from '@/components/ContributionHeatmap';
+import LanguageChart from '@/components/LanguageChart';
 
 interface TopProjectData {
   name: string;

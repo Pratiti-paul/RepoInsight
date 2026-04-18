@@ -48,6 +48,7 @@ export default function Home() {
   const [data, setData] = useState<PortfolioData | null>(null);
   const [searchedUsername, setSearchedUsername] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const [searchInput, setSearchInput] = useState('');
 
   const handleSearch = async (username: string) => {
     const cleanUsername = username.trim();
@@ -95,6 +96,7 @@ export default function Home() {
     setError(null);
     setSearchedUsername(null);
     setIsLoading(false);
+    setSearchInput('');
   };
 
   return (
@@ -120,7 +122,12 @@ export default function Home() {
           </p>
 
           <div className="pt-4">
-             <SearchBar onSearch={handleSearch} isLoading={isLoading} />
+             <SearchBar 
+              onSearch={handleSearch} 
+              isLoading={isLoading} 
+              value={searchInput}
+              onChange={setSearchInput}
+             />
           </div>
 
           <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 mt-8 text-xs font-medium text-[#8B7A66] font-sans">
