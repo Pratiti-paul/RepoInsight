@@ -1,17 +1,23 @@
 import os
 import json
 import logging
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 import redis
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
 from agent.graph import github_reviewer_app 
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 app = FastAPI()
+limiter = Limiter(key_func=get_remote_address)
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 # Refined CORS to include production URLs
 app.add_middleware(
@@ -52,7 +58,7 @@ else:
     logger.info("REDIS_URL not found. Persistent caching disabled.")
     redis_client = None
 
-def get_or_compute_review(username: str):
+async def get_or_compute_review(username: str):
     username_lower = username.lower().strip()
     cache_key = f"review:{username_lower}"
     
@@ -74,8 +80,14 @@ def get_or_compute_review(username: str):
     logger.info(f"CACHE MISS for {username_lower}. Computing insights...")
 
     # 2. Tell the LangGraph brain to start thinking
-    initial_state = {"username": username}
-    result = github_reviewer_app.invoke(initial_state)
+    try:
+        initial_state = {"username": username}
+        # Use ainvoke for parallel async nodes
+        result = await github_reviewer_app.ainvoke(initial_state)
+    except Exception as e:
+        logger.error(f"Critical Pipeline Failure in LangGraph for {username_lower}: {e}", exc_info=True)
+        # We only hit this if the graph itself breaks (not the LLM)
+        raise HTTPException(status_code=500, detail="Internal analysis pipeline encountered an unexpected error.")
     
     # 3. Handle Errors coming from the graph
     github_data_raw = result.get("github_data", {})
@@ -131,17 +143,18 @@ def review_info():
     }
 
 @app.get("/review/{username}")
-def get_review(username: str):
-    return get_or_compute_review(username)
+async def get_review(username: str):
+    return await get_or_compute_review(username)
 
 @app.post("/review")
-def post_review(request: ReviewRequest):
-    if not request.username.strip():
+@limiter.limit("5/minute")
+async def post_review(request: Request, review_request: ReviewRequest):
+    if not review_request.username.strip():
         raise HTTPException(status_code=400, detail="Username cannot be empty")
-    return get_or_compute_review(request.username)
+    return await get_or_compute_review(review_request.username)
 
 @app.delete("/clear-cache/{username}")
-def clear_cache(username: str):
+async def clear_cache(username: str):
     if not redis_client:
         return {"message": "Caching is not enabled."}
         

@@ -17,7 +17,8 @@ interface TopProjectData {
 }
 
 interface OverallPortfolioAssessment {
-  level: 'Strong' | 'Good' | 'Average' | 'Needs Improvement';
+  level: 'Ready to be Hired' | 'Needs Some Improvement' | 'Early Stage';
+  strength_focus: string;
   hireability: 'Hireable' | 'Borderline' | 'Not Ready';
   summary: string;
 }
@@ -29,6 +30,13 @@ interface PortfolioData {
   weaknesses?: string[];
   missing_skills?: string[];
   overall_portfolio_assessment?: OverallPortfolioAssessment;
+  user_profile?: {
+    name: string;
+    public_repos: number;
+    followers: number;
+    created_at: string;
+    bio: string;
+  };
   metrics?: {
     contribution_heatmap?: {
       total: number;
@@ -37,6 +45,7 @@ interface PortfolioData {
       days: any[];
     };
     language_distribution?: any[];
+    analyzed_count?: number;
   };
 }
 
@@ -144,10 +153,12 @@ export default function SharedReviewPage() {
           <div className="animate-in fade-in slide-in-from-bottom-8 duration-700 ease-out space-y-10">
             <KPIcards 
               assessment={data.overall_portfolio_assessment?.level}
+              strengthFocus={data.overall_portfolio_assessment?.strength_focus}
               hireability={data.overall_portfolio_assessment?.hireability}
               summary={data.overall_portfolio_assessment?.summary}
-              totalProjects={data.projects?.length || 0}
+              totalProjects={data.user_profile?.public_repos || data.projects?.length || 0}
               topProjectsCount={data.top_projects?.length || 0}
+              analyzedCount={data.metrics?.analyzed_count}
             />
 
             {/* Visual Analytics Row */}

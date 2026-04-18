@@ -15,19 +15,27 @@ export default function Loader() {
   ];
 
   useEffect(() => {
+    // Progress bar tick: slower overall and asymptotes toward 99%
     const timer = setInterval(() => {
       setProgress((prev) => {
-        if (prev >= 100) return 100;
-        return prev + 1;
+        if (prev >= 99) return 99;
+        
+        // Dynamic increment: starts fast, slows down
+        let increment = 1;
+        if (prev > 80) increment = 0.3;
+        else if (prev > 50) increment = 0.6;
+        
+        return Math.min(parseFloat((prev + increment).toFixed(1)), 99);
       });
-    }, 120);
+    }, 400); // 400ms * 100 ticks = 40 seconds baseline
 
+    // Content steps: advance every 8 seconds (total 32s for 4 steps)
     const stepTimer = setInterval(() => {
       setStep((prev) => {
         if (prev >= steps.length - 1) return prev;
         return prev + 1;
       });
-    }, 3000);
+    }, 8000); 
 
     return () => {
       clearInterval(timer);
@@ -36,7 +44,7 @@ export default function Loader() {
   }, []);
 
   return (
-    <div className="flex flex-col items-center justify-center space-y-12 py-16 animate-in fade-in duration-700">
+    <div className="flex flex-col items-center justify-center space-y-10 pt-2 pb-12 animate-in fade-in duration-700">
       
       {/* Central Icon */}
       <div className="relative">

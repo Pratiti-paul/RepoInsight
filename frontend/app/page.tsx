@@ -19,7 +19,8 @@ interface TopProjectData {
 }
 
 interface OverallPortfolioAssessment {
-  level: 'Strong' | 'Good' | 'Average' | 'Needs Improvement';
+  level: 'Ready to be Hired' | 'Needs Some Improvement' | 'Early Stage';
+  strength_focus: string;
   hireability: 'Hireable' | 'Borderline' | 'Not Ready';
   summary: string;
 }
@@ -31,6 +32,13 @@ interface PortfolioData {
   weaknesses?: string[];
   missing_skills?: string[];
   overall_portfolio_assessment?: OverallPortfolioAssessment;
+  user_profile?: {
+    name: string;
+    public_repos: number;
+    followers: number;
+    created_at: string;
+    bio: string;
+  };
   metrics?: {
     contribution_heatmap?: {
       total: number;
@@ -39,6 +47,7 @@ interface PortfolioData {
       days: any[];
     };
     language_distribution?: any[];
+    analyzed_count?: number;
   };
 }
 
@@ -66,19 +75,24 @@ export default function Home() {
     try {
       const response = await axios.post(process.env.NEXT_PUBLIC_API_URL + '/review', {
         username: cleanUsername,
+      }, {
+        timeout: 60000 // 60 seconds safety
       });
 
       setData(response.data as PortfolioData);
     } catch (err: any) {
       console.error("Error fetching data:", err);
       
-      if (err.response?.status === 404) {
-        // Handle custom 404 structure or fallback
+      if (err.code === 'ECONNABORTED') {
+        setError("Analysis is taking a while. Please wait a moment and click 'Retry'—it will likely be ready now.");
+      } else if (err.response?.status === 504 || err.response?.status === 502) {
+        setError("AI engine timed out, but the work is likely finishing in the background. Please retry in a few seconds.");
+      } else if (err.response?.status === 404) {
         setError("User not found. Try another username.");
       } else if (err.response?.status === 400) {
         setError(err.response?.data?.detail || "Invalid request. Please check the username.");
       } else {
-        setError("Something went wrong while fetching data. Our servers might be busy.");
+        setError("Something went wrong. Our servers might be busy. Please try again.");
       }
     } finally {
       setIsLoading(false);
@@ -215,10 +229,12 @@ export default function Home() {
 
             <KPIcards 
               assessment={data.overall_portfolio_assessment?.level}
+              strengthFocus={data.overall_portfolio_assessment?.strength_focus}
               hireability={data.overall_portfolio_assessment?.hireability}
               summary={data.overall_portfolio_assessment?.summary}
-              totalProjects={data.projects?.length || 0}
+              totalProjects={data.user_profile?.public_repos || data.projects?.length || 0}
               topProjectsCount={data.top_projects?.length || 0}
+              analyzedCount={data.metrics?.analyzed_count}
             />
 
             {/* Visual Analytics Row */}
