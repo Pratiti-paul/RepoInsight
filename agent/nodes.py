@@ -20,7 +20,7 @@ if not groq_api_key:
     logger.warning("GROQ_API_KEY is missing! LLM calls will fail.")
 
 # Set up the Groq AI brain using Llama 3.3
-llm = ChatGroq(model="llama-3.3-70b-versatile", temperature=0.2, timeout=30)
+llm = ChatGroq(model="llama-3.3-70b-versatile", temperature=0.0, timeout=30)
 
 async def fetch_graphql_data(username: str, headers: dict):
     query = """
@@ -29,7 +29,7 @@ async def fetch_graphql_data(username: str, headers: dict):
         name
         bio
         followers { totalCount }
-        totalRepositories: repositories { totalCount }
+        totalRepositories: repositories(isFork: false, ownerAffiliations: OWNER) { totalCount }
         createdAt
         contributionsCollection {
           contributionCalendar {
